@@ -3,6 +3,60 @@
    Calm teal palette, card-based, responsive
    ============================================================ */
 
+/* --- Landing Page --- */
+
+.landing-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 200px);
+  padding: 2rem 1rem;
+}
+
+.landing-content {
+  max-width: 600px;
+  text-align: center;
+}
+
+.landing-headline {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--teal-dark, #0f766e);
+  margin-bottom: 1.25rem;
+  letter-spacing: -0.02em;
+}
+
+.landing-lead {
+  font-size: 1.15rem;
+  line-height: 1.7;
+  color: #374151;
+  margin-bottom: 1.25rem;
+}
+
+.landing-body {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: #4b5563;
+  margin-bottom: 1rem;
+}
+
+.landing-note {
+  font-size: 0.92rem;
+  color: #6b7280;
+  font-style: italic;
+  margin-top: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.btn-landing {
+  font-size: 1.1rem;
+  padding: 0.9rem 2.5rem;
+}
+
+.landing-page.hidden {
+  display: none;
+}
+
 /* --- Reset & Base --- */
 
 *, *::before, *::after {
@@ -1207,7 +1261,8 @@ input[type="checkbox"] {
   .btn,
   .modal-overlay,
   .question-card,
-  .note-card {
+  .note-card,
+  .landing-page {
     display: none !important;
   }
 
@@ -1261,6 +1316,14 @@ input[type="checkbox"] {
 /* --- Responsive --- */
 
 @media (max-width: 640px) {
+  .landing-headline {
+    font-size: 1.7rem;
+  }
+
+  .landing-lead {
+    font-size: 1.05rem;
+  }
+
   .app-title {
     font-size: 2rem;
   }

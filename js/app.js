@@ -30,6 +30,7 @@ const LifeSpanApp = (() => {
   // ============================================================
 
   function init() {
+    bindLanding();
     bindUnitToggle();
     bindStage1Form();
     bindStage2Form();
@@ -39,6 +40,20 @@ const LifeSpanApp = (() => {
     bindConditionals();
     bindSourcesModal();
     bindPrintButtons();
+  }
+
+  // ============================================================
+  // LANDING PAGE
+  // ============================================================
+
+  function bindLanding() {
+    const btn = $('#btn-start-assessment');
+    if (!btn) return;
+    btn.addEventListener('click', () => {
+      $('#landing').classList.add('hidden');
+      $('#main-app').classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
   }
 
   // ============================================================

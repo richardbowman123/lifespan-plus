@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LifeSpan+ | UK Health & Life Expectancy Assessment</title>
+  <meta name="description" content="Understand your life expectancy and how to improve it, based on published UK medical evidence.">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Medical Disclaimer Banner -->
+  <div class="disclaimer-banner" role="alert">
+    This is an educational tool to help you explore the research, not a medical assessment. It can't predict your future. Always talk to your GP about your health.
+  </div>
+
+  <!-- Header -->
+  <header class="app-header">
+    <h1 class="app-title">LifeSpan<span class="accent">+</span></h1>
+    <p class="app-subtitle">A gentle exploration of the factors that shape how long and how well we live, grounded in published research.</p>
+  </header>
+
+  <main class="container">
+
+    <!-- Progress Bar -->
+    <nav class="progress-bar" aria-label="Assessment progress">
+      <div class="progress-step active" data-step="1">
+        <span class="step-number">1</span>
+        <span class="step-label">Basic Profile</span>
+      </div>
+      <div class="progress-connector"></div>
+      <div class="progress-step" data-step="2">
+        <span class="step-number">2</span>
+        <span class="step-label">Lifestyle</span>
+      </div>
+      <div class="progress-connector"></div>
+      <div class="progress-step" data-step="3">
+        <span class="step-number">3</span>
+        <span class="step-label">Health Tests</span>
+      </div>
+    </nav>
+
+    <!-- ============================================================ -->
+    <!-- STAGE 1: BASIC PROFILE                                       -->
+    <!-- ============================================================ -->
+
+    <section id="stage1" class="stage active" aria-label="Stage 1: Basic Profile">
+      <div class="stage-intro card">
+        <h2>Let's Start with the Basics</h2>
+        <p>We'll use a few simple details to look up the UK average life expectancy for someone like you. This is just a starting point. The real value comes in the next stages.</p>
+      </div>
+
+      <form id="stage1-form" class="card" novalidate>
+
+        <!-- Sex -->
+        <fieldset class="form-group">
+          <legend>Sex at birth</legend>
+          <div class="radio-group">
+            <label class="radio-card">
+              <input type="radio" name="sex" value="male" required>
+              <span class="radio-label">Male</span>
+            </label>
+            <label class="radio-card">
+              <input type="radio" name="sex" value="female" required>
+              <span class="radio-label">Female</span>
+            </label>
+          </div>
+        </fieldset>
+
+        <!-- Age -->
+        <div class="form-group">
+          <label for="age">Age</label>
+          <div class="input-with-unit">
+            <input type="number" id="age" name="age" min="18" max="100" step="1" required placeholder="e.g. 45">
+            <span class="unit-label">years</span>
+          </div>
+          <span class="field-note">Must be 18-100</span>
+        </div>
+
+        <!-- Unit Toggle -->
+        <div class="form-group">
+          <label>Measurement units</label>
+          <div class="toggle-group">
+            <button type="button" class="toggle-btn active" data-units="metric">Metric (kg/cm)</button>
+            <button type="button" class="toggle-btn" data-units="imperial">Imperial (st/ft)</button>
+          </div>
+        </div>
+
+        <!-- Weight - Metric -->
+        <div class="form-group" id="weight-metric">
+          <label for="weight-kg">Weight</label>
+          <div class="input-with-unit">
+            <input type="number" id="weight-kg" name="weightKg" min="30" max="300" step="0.1" required placeholder="e.g. 75">
+            <span class="unit-label">kg</span>
+          </div>
+        </div>
+
+        <!-- Weight - Imperial -->
+        <div class="form-group hidden" id="weight-imperial">
+          <label>Weight</label>
+          <div class="input-row">
+            <div class="input-with-unit">
+              <input type="number" id="weight-stone" name="weightStone" min="4" max="50" step="1" placeholder="e.g. 11">
+              <span class="unit-label">stone</span>
+            </div>
+            <div class="input-with-unit">
+              <input type="number" id="weight-pounds" name="weightPounds" min="0" max="13" step="1" placeholder="e.g. 10">
+              <span class="unit-label">lbs</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Height - Metric -->
+        <div class="form-group" id="height-metric">
+          <label for="height-cm">Height</label>
+          <div class="input-with-unit">
+            <input type="number" id="height-cm" name="heightCm" min="100" max="250" step="1" required placeholder="e.g. 175">
+            <span class="unit-label">cm</span>
+          </div>
+        </div>
+
+        <!-- Height - Imperial -->
+        <div class="form-group hidden" id="height-imperial">
+          <label>Height</label>
+          <div class="input-row">
+            <div class="input-with-unit">
+              <input type="number" id="height-feet" name="heightFeet" min="3" max="8" step="1" placeholder="e.g. 5">
+              <span class="unit-label">feet</span>
+            </div>
+            <div class="input-with-unit">
+              <input type="number" id="height-inches" name="heightInches" min="0" max="11" step="1" placeholder="e.g. 9">
+              <span class="unit-label">in</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">See Your Results</button>
+        </div>
+      </form>
+
+      <!-- Stage 1 Results -->
+      <div id="stage1-results" class="results-section hidden">
+
+        <div class="results-header card">
+          <h2>The UK Average for Someone Like You</h2>
+        </div>
+
+        <!-- Life Expectancy Card -->
+        <div class="card result-card le-card">
+          <h3>Average Life Expectancy</h3>
+          <p class="card-note">This is the statistical average for people of your age and sex in the UK. It's a starting point, not a prediction about you personally.</p>
+          <div class="le-display">
+            <div class="le-main">
+              <span class="le-number" id="s1-le-age">--</span>
+              <span class="le-unit"></span>
+            </div>
+            <div class="le-precise" id="s1-le-precise"></div>
+            <div class="le-remaining">
+              That's approximately <strong id="s1-le-remaining">--</strong> more years on average
+            </div>
+          </div>
+          <div class="le-healthy">
+            <span class="le-healthy-label">Average healthy life expectancy:</span>
+            <strong id="s1-hle-age">--</strong> years old
+            <p class="le-healthy-note">This is the age until which people typically live in good general health, without conditions that significantly limit day-to-day life. After this point, many people are still living well, but are more likely to be managing long-term health issues.</p>
+          </div>
+          <p class="le-source">Based on ONS National Life Tables 2020-2022 for your age and sex.</p>
+        </div>
+
+        <!-- Life Journey Chart -->
+        <div class="card result-card">
+          <h3>Your Life Journey</h3>
+          <div id="s1-life-chart" class="life-chart"></div>
+        </div>
+
+        <!-- BMI Card -->
+        <div class="card result-card" id="s1-bmi-card">
+          <h3>Body Mass Index (BMI)</h3>
+          <div class="bmi-display">
+            <span class="bmi-number" id="s1-bmi-value">--</span>
+            <span class="bmi-category" id="s1-bmi-category">--</span>
+          </div>
+          <p class="bmi-impact" id="s1-bmi-impact"></p>
+          <p class="citation">Bhaskaran K et al., Lancet Diabetes & Endocrinology, 2018</p>
+        </div>
+
+        <!-- Causes of Death Card -->
+        <div class="card result-card">
+          <h3>What People in Your Age Group Are Most at Risk From</h3>
+          <p class="card-note">These are the most common causes of death for your age and sex bracket across the UK population.</p>
+          <ol class="causes-list" id="s1-causes-list">
+          </ol>
+        </div>
+
+        <!-- Generic Advice Cards -->
+        <div class="card result-card">
+          <h3>What the Research Says Matters Most</h3>
+          <p class="card-note">These are the factors that published evidence shows have the biggest influence on life expectancy across the population. They're not targeted at you personally. They're the things that matter most for everyone.</p>
+          <div id="s1-advice-list" class="advice-list">
+          </div>
+        </div>
+
+        <!-- Transition to Stage 2 -->
+        <div class="card note-card" style="border-left-color: var(--teal);">
+          <p><strong>Want to see how your own lifestyle compares?</strong> The next stage asks about your habits and circumstances so we can show you a more personalised picture. Every question is optional. Answer as many or as few as you like.</p>
+        </div>
+
+        <div class="stage-actions">
+          <button class="btn btn-primary" id="btn-to-stage2">Continue to Personalised Assessment</button>
+          <button class="btn btn-secondary" id="btn-print-s1">Save / Print Results</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- STAGE 2: LIFESTYLE ASSESSMENT                                -->
+    <!-- ============================================================ -->
+
+    <section id="stage2" class="stage" aria-label="Stage 2: Lifestyle Assessment">
+      <div class="stage-intro card">
+        <h2>Your Lifestyle</h2>
+        <p>Now let's look at how your day-to-day habits and circumstances compare to the research. Every answer helps build a more tailored picture, but there's no pressure. Skip anything you'd rather not answer.</p>
+      </div>
+
+      <form id="stage2-form" novalidate>
+
+        <!-- SMOKING -->
+        <div class="card question-card">
+          <div class="question-header">
+            <h3>Smoking</h3>
+            <button type="button" class="btn-skip" data-skip="smoking">Skip</button>
+          </div>
+          <div class="question-body" id="q-smoking">
+            <fieldset class="form-group">
+              <legend>Have you ever smoked regularly?</legend>
+              <div class="radio-group vertical">
+                <label class="radio-card">
+                  <input type="radio" name="smoking-ever" value="never">
+                  <span class="radio-label">No, I've never smoked</span>
+                </label>
+                <label class="radio-card">
+                  <input type="radio" name="smoking-ever" value="social">
+                  <span class="radio-label">Only socially. The odd one on a night out</span>
+                </label>
+                <label class="radio-card">
+                  <input type="radio" name="smoking-ever" value="vaper">
+                  <span class="radio-label">I don't smoke, but I vape</span>
+                </label>
+                <label class="radio-card">
+                  <input type="radio" name="smoking-ever" value="former">
+                  <span class="radio-label">Yes, but I've stopped</span>
+                </label>
+                <label class="radio-card">
+                  <input type="radio" name="smoking-ever" value="current">
+                  <span class="radio-label">Yes, I still smoke</span>
+                </label>
+              </div>
+            </fieldset>
+
+            <!-- Conditional: Former smoker -->
+            <div class="conditional hidden" id="cond-former-smoker">
+              <p class="positive-note">That's a big deal. Quitting is one of the best things you can do for your health.</p>
+              <fieldset class="form-group">
+                <legend>Roughly how long ago did you stop?</legend>
+                <div class="radio-group vertical">
+                  <label class="radio-card">
+                    <input type="radio" name="quit-timeframe" value="under2">
+                    <span class="radio-label">Less than 2 years ago</span>
+                  </label>
+                  <label class="radio-card">
+                    <input type="radio" name="quit-timeframe" value="2to5">
+                    <span class="radio-label">2 to 5 years ago</span>
+                  </label>
+                  <label class="radio-card">
+                    <input type="radio" name="quit-timeframe" value="5to10">
+                    <span class="radio-label">5 to 10 years ago</span>
+                  </label>
+                  <label class="radio-card">
+                    <input type="radio" name="quit-timeframe" value="10to15">
+                    <span class="radio-label">10 to 15 years ago</span>
+                  </label>
+                  <label class="radio-card">
+                    <input type="radio" name="quit-timeframe" value="over15">
+                    <span class="radio-label">More than 15 years ago</span>
+                  </label>
+                </div>
+              </fieldset>
+            </div>
+
+            <!-- Conditional: Current smoker -->
+            <div class="conditional hidden" id="cond-current-smoker">
+              <fieldset class="form-group">
+                <legend>About how many a day?</legend>
+                <div class="field-note">If you've switched entirely to vaping, choose "I don't smoke, but I vape" above instead.</div>
+                <div class="radio-group vertical">
+                  <label class="radio-card">
+                    <input type="radio" name="smoking-amount" value="light">
+                    <span class="radio-label">Under 10</span>
+                  </label>
+                  <label class="radio-card">
+                    <input type="radio" name="smoking-amount" value="moderate">
+                    <span class="radio-label">10 to 20</span>
+                  </label>
+                  <label class="radio-card">
+                    <input type="radio" name="smoking-amount" value="heavy">
+                    <span class="radio-label">More than 20</span>
+                  </label>
+                </div>
+              </fieldset>
+            </div>
+          </div>
+        </div>
+
+        <!-- ALCOHOL -->
+        <div class="card question-card">
+          <div class="question-header">
+            <h3>Alcohol</h3>
+            <button type="button" class="btn-skip" data-skip="alcohol">Skip</button>
+          </div>
+          <div class="question-body" id="q-alcohol">
+            <fieldset class="form-group">
+              <legend>Which best describes your drinking?</legend>
+              <div class="radio-group vertical">
+                <label class="radio-card">
+                  <input type="radio" name="alcohol-pattern" value="none">
+                  <span class="radio-label">I don't drink</span>
+                </label>
+                <label class="radio-card">
+                  <input type="radio" name="alcohol-pattern" value="veryLight">
+                  <span class="radio-label">Very occasionally, a few times a year at most</span>
+                </label>
+                <label class="radio-card">
+                  <input type="radio" name="alcohol-pattern" value="light">
+                  <span class="radio-label">The odd drink here and there, maybe once a week</span>
+                </label>
+                <label class="radio-card">
+                  <input type="radio" name="alcohol-pattern" value="moderate">
+                  <span class="radio-label">Regular but moderate, a few drinks a week</span>
+                </label>
+                <label class="radio-card">
+                  <input type="radio" name="alcohol-pattern" value="heavy">
+                  <span class="radio-label">More than the guidelines, honestly</span>
+                </label>
+                <label class="radio-card">
+                  <input type="radio" name="alcohol-pattern" value="veryHeavy">
+                  <span class="radio-label">Quite a lot, most days or heavy sessions</span>
+                </label>
+              </div>
+            </fieldset>
+
+            <!-- Conditional: Binge pattern follow-up -->
+            <div class="conditional hidden" id="cond-alcohol-spread">
+              <fieldset class="form-group">
+                <legend>When you drink, is it spread out through the week, or bigger sessions?</legend>
+                <div class="radio-group vertical">
+                  <label class="radio-card">
+                    <input type="radio" name="alcohol-spread" value="spread">
+                    <span class="radio-label">Spread out fairly evenly</span>
+                  </label>
+                  <label class="radio-card">
+                    <input type="radio" name="alcohol-spread" value="sessions">
+                    <span class="radio-label">Mostly bigger sessions (weekends, nights out)</span>
+                  </label>
+                </div>
+              </fieldset>
+            </div>
+          </div>
+        </div>
+
+        <!-- PHYSICAL ACTIVITY -->
+        <div class="card question-card">
+          <div class="question-header">
+            <h3>Physical Activity</h3>
+            <button type="button" class="btn-skip" data-skip="activity">Skip</button>
+          </div>
+          <div class="question-body" id="q-activity">
+            <fieldset class="form-group">
+              <legend>Which sounds most like your typical week?</legend>
+              <div class="radio-group vertical">
+                <label class="radio-card">
+                  <input type="radio" name="activity-level" value="sedentary">
+                  <span class="radio-label">Mostly sitting. Desk job, not much movement</span>
+                </label>
+                <label class="radio-card">
+                  <input type="radio" name="activity-level" value="low">
+                  <span class="radio-label">On my feet through work or daily life, but no dedicated exercise</span>
+                </label>
+                <label class="radio-card">
+                  <input type="radio" name="activity-level" value="belowGuideline">
+                  <span class="radio-label">A few walks or gym sessions a week</span>
+                </label>
+                <label class="radio-card">
+                  <input type="radio" name="activity-level" value="meetsGuideline">
+                  <span class="radio-label">Regular exercise, 3 or more times a week</span>
+                </label>
+                <label class="radio-card">
+                  <input type="radio" name="activity-level" value="exceedsGuideline">
+                  <span class="radio-label">Very active most days, running, cycling, sport, etc.</span>
+                </label>
+              </div>
+            </fieldset>
+
+            <fieldset class="form-group">
+              <legend>Do you spend most of your working day sitting?</legend>
+              <div class="radio-group">
+                <label class="radio-card">
+                  <input type="radio" name="sedentary-work" value="yes">
+                  <span class="radio-label">Yes, mostly sitting</span>
+                </label>
+                <label class="radio-card">
+                  <input type="radio" name="sedentary-work" value="no">
+                  <span class="radio-label">No, I'm on my feet</span>
+                </label>
+                <label class="radio-card">
+                  <input type="radio" name="sedentary-work" value="notWorking">
+                  <span class="radio-label">I'm retired or not currently working</span>
+                </label>
+              </div>
+            </fieldset>
+          </div>
+        </div>
+
+        <!-- DIET -->
+        <div class="card question-card">
+          <div class="question-header">
+            <h3>Diet</h3>
+            <button type="button" class="btn-skip" data-skip="diet">Skip</button>
+          </div>
+          <div class="question-body" id="q-diet">
+            <fieldset class="form-group">
+              <legend>How much fruit and veg do you eat on a typical day?</legend>
+              <div class="field-note">A portion is roughly a handful: an apple, a bowl of salad, a serving of veg with dinner.</div>
+              <div class="radio-group vertical">
+                <label class="radio-card">
+                  <input type="radio" name="fruit-veg" value="0-1">
+                  <span class="radio-label">Very little, maybe one piece or less</span>
+                </label>
+                <label class="radio-card">
+                  <input type="radio" name="fruit-veg" value="1-2">
+                  <span class="radio-label">I try, but it's hit and miss. Some days yes, some days not</span>
+                </label>
+                <label class="radio-card">
+                  <input type="radio" name="fruit-veg" value="2-3">
+                  <span class="radio-label">A reasonable amount, a couple of portions most days</span>
+                </label>
+                <label class="radio-card">
+                  <input type="radio" name="fruit-veg" value="4-5">
+                  <span class="radio-label">A good amount, 4 or 5 portions most days</span>
+                </label>
+                <label class="radio-card">
+                  <input type="radio" name="fruit-veg" value="5+">
+                  <span class="radio-label">Lots. I make a real effort to eat plenty</span>
+                </label>
+              </div>
+            </fieldset>
+
+            <fieldset class="form-group">
+              <legend>What about ultra-processed food? How often does it feature?</legend>
+              <div class="field-note">Think ready meals, crisps, sugary drinks, fast food, processed meats, packaged snacks.</div>
+              <div class="radio-group vertical">
+                <label class="radio-card">
+                  <input type="radio" name="ultra-processed" value="rarely">
+                  <span class="radio-label">Rarely. I mostly cook from scratch</span>
+                </label>
+                <label class="radio-card">
+                  <input type="radio" name="ultra-processed" value="sometimes">
+                  <span class="radio-label">Sometimes, a few times a week</span>
+                </label>
+                <label class="radio-card">
+                  <input type="radio" name="ultra-processed" value="often">
+                  <span class="radio-label">Quite often, most days if I'm honest</span>
+                </label>
+                <label class="radio-card">
+                  <input type="radio" name="ultra-processed" value="mostly">
+                  <span class="radio-label">It's the bulk of what I eat</span>
+                </label>
+              </div>
+            </fieldset>
+          </div>
+        </div>
+
+        <!-- SLEEP -->
+        <div class="card question-card">
+          <div class="question-header">
+            <h3>Sleep</h3>
+            <button type="button" class="btn-skip" data-skip="sleep">Skip</button>
+          </div>
+          <div class="question-body" id="q-sleep">
+            <div class="form-group">
+              <label for="sleep-hours">On a typical night, roughly how many hours do you sleep?</label>
+              <div class="input-with-unit">
+                <input type="number" id="sleep-hours" name="sleepHours" min="1" max="16" step="0.5" placeholder="e.g. 7">
+                <span class="unit-label">hours</span>
+              </div>
+            </div>
+
+            <fieldset class="form-group">
+              <legend>And how's the quality of your sleep?</legend>
+              <div class="radio-group vertical">
+                <label class="radio-card">
+                  <input type="radio" name="sleep-quality" value="good">
+                  <span class="radio-label">Good. I usually wake up feeling rested</span>
+                </label>
+                <label class="radio-card">
+                  <input type="radio" name="sleep-quality" value="fair">
+                  <span class="radio-label">Fair. It's OK, but I could sleep better</span>
+                </label>
+                <label class="radio-card">
+                  <input type="radio" name="sleep-quality" value="poor">
+                  <span class="radio-label">Poor. I often struggle to sleep or wake up tired</span>
+                </label>
+                <label class="radio-card">
+                  <input type="radio" name="sleep-quality" value="diagnosed">
+                  <span class="radio-label">I have a diagnosed sleep condition (e.g. sleep apnoea)</span>
+                </label>
+              </div>
+            </fieldset>
+          </div>
+        </div>
+
+        <!-- MENTAL WELLBEING -->
+        <div class="card question-card">
+          <div class="question-header">
+            <h3>Mental Wellbeing</h3>
+            <button type="button" class="btn-skip" data-skip="mentalHealth">Skip</button>
+          </div>
+          <div class="question-body" id="q-mentalHealth">
+            <fieldset class="form-group">
+              <legend>How would you say your mental health has been lately?</legend>
+              <div class="radio-group vertical">
+                <label class="radio-card">
+                  <input type="radio" name="depression" value="none">
+                  <span class="radio-label">Good. I feel pretty stable and content</span>
+                </label>
+                <label class="radio-card">
+                  <input type="radio" name="depression" value="minimal">
+                  <span class="radio-label">Generally fine, with the occasional off day</span>
+                </label>
+                <label class="radio-card">
+                  <input type="radio" name="depression" value="mild">
+                  <span class="radio-label">Up and down. Some low patches or anxious spells</span>
+                </label>
+                <label class="radio-card">
+                  <input type="radio" name="depression" value="moderate">
+                  <span class="radio-label">More bad days than good lately</span>
+                </label>
+                <label class="radio-card">
+                  <input type="radio" name="depression" value="severe">
+                  <span class="radio-label">Really struggling. It's significantly affecting my life</span>
+                </label>
+              </div>
+            </fieldset>
+
+            <fieldset class="form-group">
+              <legend>How connected do you feel to the people around you?</legend>
+              <div class="radio-group vertical">
+                <label class="radio-card">
+                  <input type="radio" name="loneliness" value="never">
+                  <span class="radio-label">Well connected. I rarely feel lonely</span>
+                </label>
+                <label class="radio-card">
+                  <input type="radio" name="loneliness" value="occasional">
+                  <span class="radio-label">I have people around, but sometimes feel a bit disconnected</span>
+                </label>
+                <label class="radio-card">
+                  <input type="radio" name="loneliness" value="sometimes">
+                  <span class="radio-label">I feel lonely a fair bit, if I'm honest</span>
+                </label>
+                <label class="radio-card">
+                  <input type="radio" name="loneliness" value="often">
+                  <span class="radio-label">Quite isolated. I often feel on my own</span>
+                </label>
+                <label class="radio-card">
+                  <input type="radio" name="loneliness" value="always">
+                  <span class="radio-label">Very lonely most of the time</span>
+                </label>
+              </div>
+            </fieldset>
+          </div>
+        </div>
+
+        <!-- STRESS (placed next to Mental Wellbeing since they're related) -->
+        <div class="card question-card">
+          <div class="question-header">
+            <h3>Stress</h3>
+            <button type="button" class="btn-skip" data-skip="stress">Skip</button>
+          </div>
+          <div class="question-body" id="q-stress">
+            <fieldset class="form-group">
+              <legend>How stressed do you feel in general?</legend>
+              <div class="radio-group vertical">
+                <label class="radio-card">
+                  <input type="radio" name="stress-level" value="low">
+                  <span class="radio-label">Pretty relaxed most of the time</span>
+                </label>
+                <label class="radio-card">
+                  <input type="radio" name="stress-level" value="moderate">
+                  <span class="radio-label">Some stress, but I manage it OK</span>
+                </label>
+                <label class="radio-card">
+                  <input type="radio" name="stress-level" value="high">
+                  <span class="radio-label">Often stressed. It weighs on me</span>
+                </label>
+                <label class="radio-card">
+                  <input type="radio" name="stress-level" value="veryHigh">
+                  <span class="radio-label">Constant pressure. It feels relentless</span>
+                </label>
+              </div>
+            </fieldset>
+
+            <fieldset class="form-group">
+              <legend>Do you have ways of coping that work for you?</legend>
+              <div class="field-note">This doesn't affect your score. We're just curious. People who have coping strategies tend to manage stress better.</div>
+              <div class="radio-group vertical">
+                <label class="radio-card">
+                  <input type="radio" name="stress-coping" value="good">
+                  <span class="radio-label">Yes, exercise, hobbies, talking to people, etc.</span>
+                </label>
+                <label class="radio-card">
+                  <input type="radio" name="stress-coping" value="some">
+                  <span class="radio-label">Sometimes, but not consistently</span>
+                </label>
+                <label class="radio-card">
+                  <input type="radio" name="stress-coping" value="unhealthy">
+                  <span class="radio-label">I have ways of coping, but they're probably not great for me</span>
+                </label>
+                <label class="radio-card">
+                  <input type="radio" name="stress-coping" value="poor">
+                  <span class="radio-label">Not really. I just push through</span>
+                </label>
+              </div>
+            </fieldset>
+          </div>
+        </div>
+
+        <!-- SOCIAL CONNECTIONS -->
+        <div class="card question-card">
+          <div class="question-header">
+            <h3>Social Connections</h3>
+            <button type="button" class="btn-skip" data-skip="social">Skip</button>
+          </div>
+          <div class="question-body" id="q-social">
+            <fieldset class="form-group">
+              <legend>How often do you see, call or message friends or family (outside your household)?</legend>
+              <div class="radio-group vertical">
+                <label class="radio-card">
+                  <input type="radio" name="social-frequency" value="daily">
+                  <span class="radio-label">Most days. I'm in regular touch</span>
+                </label>
+                <label class="radio-card">
+                  <input type="radio" name="social-frequency" value="weekly">
+                  <span class="radio-label">At least once a week</span>
+                </label>
+                <label class="radio-card">
+                  <input type="radio" name="social-frequency" value="monthly">
+                  <span class="radio-label">A couple of times a month</span>
+                </label>
+                <label class="radio-card">
+                  <input type="radio" name="social-frequency" value="rarely">
+                  <span class="radio-label">Rarely. I don't have much contact</span>
+                </label>
+              </div>
+            </fieldset>
+
+            <fieldset class="form-group">
+              <legend>Do you live on your own?</legend>
+              <div class="radio-group">
+                <label class="radio-card">
+                  <input type="radio" name="living-alone" value="yes">
+                  <span class="radio-label">Yes, I live alone</span>
+                </label>
+                <label class="radio-card">
+                  <input type="radio" name="living-alone" value="no">
+                  <span class="radio-label">No, I live with others</span>
+                </label>
+              </div>
+            </fieldset>
+          </div>
+        </div>
+
+        <!-- EXISTING CONDITIONS -->
+        <div class="card question-card">
+          <div class="question-header">
+            <h3>Existing Health Conditions</h3>
+            <button type="button" class="btn-skip" data-skip="conditions">Skip</button>
+          </div>
+          <div class="question-body" id="q-conditions">
+            <fieldset class="form-group">
+              <legend>Has a doctor ever diagnosed you with any of these?</legend>
+              <div class="field-note">Tick any that apply. If you're managing a condition well, that's great. This just helps us build a more complete picture.</div>
+              <div class="checkbox-group">
+                <label class="checkbox-card">
+                  <input type="checkbox" name="conditions" value="diabetes">
+                  <span class="checkbox-label">Type 2 diabetes</span>
+                </label>
+                <label class="checkbox-card">
+                  <input type="checkbox" name="conditions" value="heartDisease">
+                  <span class="checkbox-label">Heart disease</span>
+                </label>
+                <label class="checkbox-card">
+                  <input type="checkbox" name="conditions" value="cancer">
+                  <span class="checkbox-label">Cancer (current or recent)</span>
+                </label>
+                <label class="checkbox-card">
+                  <input type="checkbox" name="conditions" value="copd">
+                  <span class="checkbox-label">COPD or chronic lung disease</span>
+                </label>
+                <label class="checkbox-card">
+                  <input type="checkbox" name="conditions" value="stroke">
+                  <span class="checkbox-label">Previous stroke or TIA</span>
+                </label>
+                <label class="checkbox-card">
+                  <input type="checkbox" name="conditions" value="kidneyDisease">
+                  <span class="checkbox-label">Chronic kidney disease</span>
+                </label>
+              </div>
+            </fieldset>
+          </div>
+        </div>
+
+        <!-- FAMILY HISTORY -->
+        <div class="card question-card">
+          <div class="question-header">
+            <h3>Family History</h3>
+            <button type="button" class="btn-skip" data-skip="familyHistory">Skip</button>
+          </div>
+          <div class="question-body" id="q-familyHistory">
+            <fieldset class="form-group">
+              <legend>Did any close relatives (parents, brothers, sisters) develop any of the following before age 60?</legend>
+              <div class="field-note">This isn't about blame or destiny. It's just one piece of the picture. Don't worry if you're not sure.</div>
+              <div class="checkbox-group">
+                <label class="checkbox-card">
+                  <input type="checkbox" name="family-history" value="heartDisease">
+                  <span class="checkbox-label">Heart disease or heart attack</span>
+                </label>
+                <label class="checkbox-card">
+                  <input type="checkbox" name="family-history" value="cancer">
+                  <span class="checkbox-label">Cancer</span>
+                </label>
+                <label class="checkbox-card">
+                  <input type="checkbox" name="family-history" value="diabetes">
+                  <span class="checkbox-label">Type 2 diabetes</span>
+                </label>
+                <label class="checkbox-card">
+                  <input type="checkbox" name="family-history" value="unsure">
+                  <span class="checkbox-label">I'm not sure</span>
+                </label>
+              </div>
+            </fieldset>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">See Lifestyle Results</button>
+          <button type="button" class="btn btn-secondary" id="btn-back-to-s1">Back to Profile</button>
+        </div>
+      </form>
+
+      <!-- Stage 2 Results -->
+      <div id="stage2-results" class="results-section hidden">
+
+        <div class="results-header card">
+          <h2>Your Personalised Picture</h2>
+        </div>
+
+        <!-- Updated LE Card -->
+        <div class="card result-card le-card">
+          <h3>Your Adjusted Estimate</h3>
+          <p class="card-note">Based on the information you've shared, here's how your lifestyle factors shift the average. Remember, this is an illustration based on population-level research, not a clinical prediction.</p>
+          <div class="le-display">
+            <div class="le-main">
+              <span class="le-number" id="s2-le-age">--</span>
+              <span class="le-unit"></span>
+            </div>
+            <div class="le-precise" id="s2-le-precise"></div>
+            <div class="le-comparison" id="s2-le-comparison">
+            </div>
+          </div>
+          <div class="le-healthy">
+            <span class="le-healthy-label">Estimated healthy life expectancy:</span>
+            <strong id="s2-hle-age">--</strong> years old
+          </div>
+        </div>
+
+        <!-- Life Journey Chart -->
+        <div class="card result-card">
+          <h3>Your Life Journey</h3>
+          <div id="s2-life-chart" class="life-chart"></div>
+        </div>
+
+        <!-- Factor Breakdown Bar Chart -->
+        <div class="card result-card">
+          <h3>How Each Factor Affects Your Estimate</h3>
+          <div id="s2-factor-chart" class="factor-chart">
+          </div>
+          <div id="s2-skipped-note" class="skipped-note hidden">
+          </div>
+        </div>
+
+        <!-- Narrative Summary -->
+        <div id="s2-narrative-summary" class="narrative-summary hidden"></div>
+
+        <!-- Recommendations -->
+        <div class="card result-card">
+          <h3>Where the Research Suggests You Could Benefit Most</h3>
+          <p class="card-note">Based on what you've told us, these are the areas where evidence suggests the biggest potential gains. Ranked by estimated impact.</p>
+          <div id="s2-recommendations" class="recommendations-list">
+          </div>
+          <p class="overlap-footer hidden" id="s2-overlap-footer">Many of these overlap. Improving one often helps others too.</p>
+        </div>
+
+        <!-- Transparency Note -->
+        <div class="card note-card">
+          <p><strong>How this works:</strong> We start from the UK average for your age and sex, then adjust up or down based on what published studies say about each lifestyle factor. It's a simplified illustration. In real life, these things interact in ways that are unique to you. Think of it as a useful guide, not a definitive answer.</p>
+          <p class="citation">Combined healthy lifestyle impact reference: Li Y et al., "Impact of healthy lifestyle factors on life expectancies in the US population." Circulation. 2018;138(4):345-355.</p>
+        </div>
+
+        <div class="stage-actions">
+          <button class="btn btn-primary" id="btn-to-stage3">Continue to Health Tests</button>
+          <button class="btn btn-secondary" id="btn-print-s2">Save / Print Results</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- STAGE 3: HEALTH TESTS                                        -->
+    <!-- ============================================================ -->
+
+    <section id="stage3" class="stage" aria-label="Stage 3: Health Tests">
+      <div class="stage-intro card">
+        <h2>Health Tests (Optional)</h2>
+        <p>If you'd like to go deeper, you can enter results from simple home tests or any recent GP results you have. These add another layer of detail to your picture.</p>
+        <p class="card-note">Everything here is optional. Just fill in whatever you have. Leave the rest blank.</p>
+      </div>
+
+      <form id="stage3-form" novalidate>
+
+        <!-- HOME TESTS -->
+        <div class="card question-card">
+          <div class="question-header">
+            <h3>Home Tests</h3>
+          </div>
+          <div class="question-body">
+
+            <div class="test-input-group">
+              <div class="test-info">
+                <label for="test-rhr">Resting Heart Rate</label>
+                <p class="test-desc">Sit quietly for 5 minutes, then count your pulse for 60 seconds.</p>
+              </div>
+              <div class="input-with-unit">
+                <input type="number" id="test-rhr" name="restingHeartRate" min="30" max="200" step="1" placeholder="e.g. 68">
+                <span class="unit-label">bpm</span>
+              </div>
+            </div>
+
+            <div class="test-input-group">
+              <div class="test-info">
+                <label for="test-pushups">Push-ups (in one go)</label>
+                <p class="test-desc">Do as many push-ups as you can without stopping.</p>
+              </div>
+              <div class="input-with-unit">
+                <input type="number" id="test-pushups" name="pushUps" min="0" max="200" step="1" placeholder="e.g. 20">
+                <span class="unit-label">count</span>
+              </div>
+            </div>
+
+            <div class="test-input-group">
+              <div class="test-info">
+                <label for="test-sitstand">Sit-to-Stand (30 sec)</label>
+                <p class="test-desc">From a chair, stand up and sit down as many times as you can in 30 seconds.</p>
+              </div>
+              <div class="input-with-unit">
+                <input type="number" id="test-sitstand" name="sitToStand" min="0" max="50" step="1" placeholder="e.g. 15">
+                <span class="unit-label">count</span>
+              </div>
+            </div>
+
+            <div class="test-input-group">
+              <div class="test-info">
+                <label for="test-balance">Single-Leg Balance</label>
+                <p class="test-desc">Stand on one leg with eyes open. Time how long you can hold it.</p>
+              </div>
+              <div class="input-with-unit">
+                <input type="number" id="test-balance" name="singleLegBalance" min="0" max="120" step="1" placeholder="e.g. 30">
+                <span class="unit-label">seconds</span>
+              </div>
+            </div>
+
+            <div class="test-input-group">
+              <div class="test-info">
+                <label for="test-waist">Waist Circumference</label>
+                <p class="test-desc">Measure around your waist at belly button level, breathing out naturally.</p>
+              </div>
+              <div class="input-with-unit">
+                <input type="number" id="test-waist" name="waistCircumference" min="40" max="200" step="1" placeholder="e.g. 88">
+                <span class="unit-label">cm</span>
+              </div>
+            </div>
+
+            <div class="test-input-group">
+              <div class="test-info">
+                <label for="test-grip">Grip Strength</label>
+                <p class="test-desc">If you have a hand dynamometer, squeeze as hard as you can. Best of 3 attempts.</p>
+              </div>
+              <div class="input-with-unit">
+                <input type="number" id="test-grip" name="gripStrength" min="0" max="100" step="1" placeholder="e.g. 35">
+                <span class="unit-label">kg</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- GP / MEDICAL TESTS -->
+        <div class="card question-card">
+          <div class="question-header">
+            <h3>GP / Medical Tests</h3>
+          </div>
+          <div class="question-body">
+            <p class="card-note" style="margin-bottom: 1rem;">Enter any results you have from recent blood tests or GP check-ups.</p>
+
+            <div class="test-input-group">
+              <div class="test-info">
+                <label for="test-bp">Blood Pressure (systolic)</label>
+                <p class="test-desc">The top number from your blood pressure reading.</p>
+              </div>
+              <div class="input-with-unit">
+                <input type="number" id="test-bp" name="bloodPressure" min="60" max="250" step="1" placeholder="e.g. 125">
+                <span class="unit-label">mmHg</span>
+              </div>
+            </div>
+
+            <div class="test-input-group">
+              <div class="test-info">
+                <label for="test-cholesterol">Total Cholesterol</label>
+                <p class="test-desc">Your total cholesterol level from a blood test.</p>
+              </div>
+              <div class="input-with-unit">
+                <input type="number" id="test-cholesterol" name="totalCholesterol" min="1" max="15" step="0.1" placeholder="e.g. 5.2">
+                <span class="unit-label">mmol/L</span>
+              </div>
+            </div>
+
+            <div class="test-input-group">
+              <div class="test-info">
+                <label for="test-hba1c">HbA1c</label>
+                <p class="test-desc">Your HbA1c (average blood sugar) level.</p>
+              </div>
+              <div class="input-with-unit">
+                <input type="number" id="test-hba1c" name="hba1c" min="10" max="150" step="1" placeholder="e.g. 38">
+                <span class="unit-label">mmol/mol</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">See Final Results</button>
+          <button type="button" class="btn btn-secondary" id="btn-back-to-s2">Back to Lifestyle</button>
+        </div>
+      </form>
+
+      <!-- Stage 3 Results -->
+      <div id="stage3-results" class="results-section hidden">
+
+        <div class="results-header card">
+          <h2>Your Full Picture</h2>
+        </div>
+
+        <!-- Final LE Card -->
+        <div class="card result-card le-card">
+          <h3>Your Overall Estimate</h3>
+          <p class="card-note">Combining everything you've shared (your profile, lifestyle, and health test results), here's the research-based picture. This is an illustration, not a diagnosis.</p>
+          <div class="le-display">
+            <div class="le-main">
+              <span class="le-number" id="s3-le-age">--</span>
+              <span class="le-unit"></span>
+            </div>
+            <div class="le-precise" id="s3-le-precise"></div>
+            <div class="le-remaining">
+              That's approximately <strong id="s3-le-remaining">--</strong> more years
+            </div>
+          </div>
+          <div class="le-healthy">
+            <span class="le-healthy-label">Estimated healthy life expectancy:</span>
+            <strong id="s3-hle-age">--</strong> years old
+          </div>
+          <div class="le-comparison" id="s3-le-comparison">
+          </div>
+        </div>
+
+        <!-- Life Journey Chart -->
+        <div class="card result-card">
+          <h3>Your Life Journey</h3>
+          <div id="s3-life-chart" class="life-chart"></div>
+        </div>
+
+        <!-- Health Test Results -->
+        <div class="card result-card">
+          <h3>Your Health Test Results</h3>
+          <div id="s3-test-results" class="test-results-grid">
+          </div>
+        </div>
+
+        <!-- Narrative Summary -->
+        <div id="s3-narrative-summary" class="narrative-summary hidden"></div>
+
+        <!-- Combined Recommendations -->
+        <div class="card result-card">
+          <h3>Things Worth Exploring</h3>
+          <p class="card-note">Based on everything you've shared, these are the areas where research suggests the most potential benefit. They're a good starting point for a conversation with your GP.</p>
+          <div id="s3-all-recommendations" class="recommendations-list">
+          </div>
+          <p class="overlap-footer hidden" id="s3-overlap-footer">Many of these overlap. Improving one often helps others too.</p>
+        </div>
+
+        <!-- Final Transparency Note -->
+        <div class="card note-card">
+          <p><strong>A note on how this works:</strong> This tool adds and subtracts years from the UK average based on individual risk factors from published studies. In reality, health is far more complex than any single number. These factors interact in ways unique to each person. Think of this as a conversation starter, not a verdict.</p>
+          <p><strong>What to do next:</strong> If anything here surprised you or raised questions, that's a great reason to book a check-up with your GP. They can give you proper, personalised advice.</p>
+        </div>
+
+        <div class="stage-actions">
+          <button class="btn btn-primary" id="btn-print-final">Save / Print Full Report</button>
+          <button class="btn btn-secondary" id="btn-start-over">Start Over</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <p>LifeSpan+ is an educational tool for exploring the research behind life expectancy. It's not a medical assessment. <button class="btn-link" id="btn-show-sources">View all sources</button></p>
+    <p class="footer-credit">Built as an experiment by <a href="https://thisisinsight.co.uk" target="_blank" rel="noopener">This Is Insight</a></p>
+  </footer>
+
+  <!-- Sources Modal -->
+  <div class="modal-overlay hidden" id="sources-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>All Sources &amp; Citations</h2>
+        <button class="btn-close" id="btn-close-sources" aria-label="Close">&times;</button>
+      </div>
+      <div class="modal-body" id="sources-list">
+      </div>
+    </div>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/calculations.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

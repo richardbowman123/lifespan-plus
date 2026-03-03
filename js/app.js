@@ -15,7 +15,9 @@ const LifeSpanApp = (() => {
     stage2Result: null,
     tests: {},              // Stage 3 data
     stage3Result: null,
-    skipped: new Set()      // Skipped question sections
+    skipped: new Set(),     // Skipped question sections
+    whatIfFactors: [],      // Improvable factor objects for What If panel
+    whatIfToggled: new Set() // Currently toggled factor keys
   };
 
   // ============================================================
@@ -400,6 +402,9 @@ const LifeSpanApp = (() => {
       $('#s2-overlap-footer').classList.remove('hidden');
     }
 
+    // Render What If panel
+    renderWhatIfPanel();
+
     // Show results, hide form
     $('#stage2-form').classList.add('hidden');
     $('#stage2-results').classList.remove('hidden');
@@ -627,6 +632,191 @@ const LifeSpanApp = (() => {
   }
 
   // ============================================================
+  // WHAT-IF SCENARIO PANEL
+  // ============================================================
+
+  // Factor keys that are non-toggleable (fixed facts the user can't change)
+  const NON_TOGGLEABLE = new Set(['conditions', 'familyHistory']);
+
+  // Map from adjustment label to factor key used in lifestyle data
+  const LABEL_TO_KEY = {
+    'Smoking': 'smoking',
+    'Alcohol': 'alcohol',
+    'Physical activity': 'activity',
+    'Diet': 'diet',
+    'Sleep': 'sleep',
+    'Mental wellbeing': 'mentalHealth',
+    'Social connections': 'social',
+    'Existing conditions': 'conditions',
+    'Family history': 'familyHistory',
+    'Work stress': 'stress'
+  };
+
+  // Friendly descriptions of what "optimal" means for each factor
+  const OPTIMAL_DESCRIPTIONS = {
+    smoking: 'Never smoked',
+    alcohol: 'Non-drinker',
+    activity: 'Very active (300+ min/week)',
+    diet: '5+ fruit & veg, rarely processed food',
+    sleep: '7-8 hours, good quality',
+    mentalHealth: 'Good mental health, well connected',
+    social: 'Daily social contact, not living alone',
+    stress: 'Low stress'
+  };
+
+  function getImprovableFactors(stage2Result) {
+    const optimals = LifeSpanCalc.whatIfOptimals;
+    const factors = [];
+
+    for (const adj of stage2Result.adjustments) {
+      const key = LABEL_TO_KEY[adj.label];
+      if (!key || NON_TOGGLEABLE.has(key) || adj.skipped) continue;
+
+      const optimal = optimals[key];
+      if (!optimal) continue;
+
+      // The gain is the difference between optimal adjustment and current adjustment
+      const gain = optimal.adjustment - adj.value;
+
+      // Only show if gain is meaningful (> 0.1 years)
+      if (gain > 0.1) {
+        factors.push({
+          key,
+          label: adj.label,
+          currentValue: adj.value,
+          optimalValue: optimal.adjustment,
+          gain: Math.round(gain * 10) / 10,
+          detail: adj.detail,
+          optimalDescription: OPTIMAL_DESCRIPTIONS[key]
+        });
+      }
+    }
+
+    // Sort by gain descending
+    factors.sort((a, b) => b.gain - a.gain);
+    return factors;
+  }
+
+  function renderWhatIfPanel() {
+    const panel = $('#whatif-panel');
+    const togglesContainer = $('#whatif-toggles');
+
+    state.whatIfFactors = getImprovableFactors(state.stage2Result);
+    state.whatIfToggled.clear();
+
+    // If no improvable factors, keep panel hidden
+    if (state.whatIfFactors.length === 0) {
+      panel.classList.add('hidden');
+      return;
+    }
+
+    // Set initial LE display to current Stage 2 result
+    const range = formatLERange(state.stage2Result.adjustedExpectedAge);
+    $('#whatif-le-age').textContent = range.display;
+    $('#whatif-gain').classList.add('hidden');
+    $('#whatif-footer').classList.add('hidden');
+
+    // Build toggle cards
+    togglesContainer.innerHTML = state.whatIfFactors.map(factor => `
+      <div class="whatif-toggle-item" data-factor="${factor.key}">
+        <div class="whatif-toggle-info">
+          <div class="whatif-toggle-label">${escapeHTML(factor.label)}</div>
+          <div class="whatif-toggle-detail">${escapeHTML(factor.optimalDescription)}</div>
+        </div>
+        <span class="whatif-toggle-gain">+${factor.gain.toFixed(1)} yrs</span>
+        <label class="whatif-switch">
+          <input type="checkbox" data-whatif-key="${factor.key}">
+          <span class="whatif-switch-slider"></span>
+        </label>
+      </div>
+    `).join('');
+
+    // Bind toggle events
+    togglesContainer.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+      cb.addEventListener('change', (e) => {
+        const key = e.target.dataset.whatifKey;
+        const item = e.target.closest('.whatif-toggle-item');
+
+        if (e.target.checked) {
+          state.whatIfToggled.add(key);
+          item.classList.add('active');
+        } else {
+          state.whatIfToggled.delete(key);
+          item.classList.remove('active');
+        }
+
+        updateWhatIfResults();
+      });
+    });
+
+    // Show the panel
+    panel.classList.remove('hidden');
+  }
+
+  function updateWhatIfResults() {
+    if (state.whatIfToggled.size === 0) {
+      // Restore original display
+      const range = formatLERange(state.stage2Result.adjustedExpectedAge);
+      animateLENumber($('#whatif-le-age'), range.display);
+      $('#whatif-gain').classList.add('hidden');
+      $('#whatif-footer').classList.add('hidden');
+
+      // Restore original factor chart
+      renderFactorChart(state.stage2Result.adjustments);
+      return;
+    }
+
+    // Calculate what-if result
+    const whatIfResult = LifeSpanCalc.calculateWhatIf(
+      state.stage1Result,
+      state.lifestyle,
+      Array.from(state.whatIfToggled)
+    );
+
+    // Update what-if display
+    const gain = whatIfResult.adjustedExpectedAge - state.stage2Result.adjustedExpectedAge;
+    updateWhatIfDisplay(whatIfResult.adjustedExpectedAge, gain);
+
+    // Update factor chart to show what-if adjustments
+    renderFactorChart(whatIfResult.adjustments);
+  }
+
+  function updateWhatIfDisplay(newLE, gain) {
+    const range = formatLERange(newLE);
+    animateLENumber($('#whatif-le-age'), range.display);
+
+    // Show gain
+    const gainEl = $('#whatif-gain');
+    const gainText = $('#whatif-gain-text');
+    if (gain > 0) {
+      gainText.textContent = `+${gain.toFixed(1)} years potential gain`;
+      gainEl.classList.remove('hidden');
+    } else {
+      gainEl.classList.add('hidden');
+    }
+
+    // Show encouragement footer
+    $('#whatif-footer').classList.remove('hidden');
+  }
+
+  function animateLENumber(element, newText) {
+    // Fade out
+    element.classList.add('fade-out');
+    element.classList.remove('pop-in');
+
+    setTimeout(() => {
+      element.textContent = newText;
+      element.classList.remove('fade-out');
+      element.classList.add('pop-in');
+
+      // Clean up animation class after it completes
+      setTimeout(() => {
+        element.classList.remove('pop-in');
+      }, 300);
+    }, 150);
+  }
+
+  // ============================================================
   // NAVIGATION
   // ============================================================
 
@@ -689,6 +879,8 @@ const LifeSpanApp = (() => {
     state.tests = {};
     state.stage3Result = null;
     state.skipped.clear();
+    state.whatIfFactors = [];
+    state.whatIfToggled.clear();
 
     // Reset forms
     $('#stage1-form').reset();
@@ -724,6 +916,10 @@ const LifeSpanApp = (() => {
 
     // Reset skipped note
     $('#s2-skipped-note').classList.add('hidden');
+
+    // Reset What If panel
+    const whatifPanel = $('#whatif-panel');
+    if (whatifPanel) whatifPanel.classList.add('hidden');
 
     // Reset narrative summaries and overlap footers
     ['#s2-narrative-summary', '#s3-narrative-summary'].forEach(sel => {

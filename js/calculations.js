@@ -737,6 +737,37 @@ const LifeSpanCalc = (() => {
     return html;
   }
 
+  // ============================================================
+  // WHAT-IF SCENARIO CALCULATOR
+  // ============================================================
+
+  // Optimal values per lifestyle factor - the best-case for each
+  const whatIfOptimals = {
+    smoking:      { data: { status: 'never' },                                    adjustment: 0 },
+    alcohol:      { data: { units: 0 },                                           adjustment: 0 },
+    activity:     { data: { minutes: 400 },                                       adjustment: 1.5 },
+    diet:         { data: { fruitVeg: '5+', ultraProcessed: 'rarely' },           adjustment: 1.0 },
+    sleep:        { data: { hours: 7.5, quality: 'good' },                        adjustment: 0 },
+    mentalHealth: { data: { depression: 'none', loneliness: 'never' },            adjustment: 0 },
+    social:       { data: { livingAlone: false, frequency: 'daily' },             adjustment: 0.5 },
+    stress:       { data: { level: 'low' },                                       adjustment: 0.3 }
+  };
+
+  function calculateWhatIf(stage1Result, lifestyle, toggledKeys) {
+    // Deep clone the lifestyle so we don't mutate the original
+    const modified = JSON.parse(JSON.stringify(lifestyle));
+
+    // Override each toggled factor with its optimal value
+    for (const key of toggledKeys) {
+      if (whatIfOptimals[key]) {
+        modified[key] = { ...whatIfOptimals[key].data };
+      }
+    }
+
+    // Run the standard Stage 2 calculation with modified data
+    return calculateStage2(stage1Result, modified);
+  }
+
   // Public API
   return {
     stoneToKg,
@@ -763,7 +794,9 @@ const LifeSpanCalc = (() => {
     getConditionsAdjustment,
     getFamilyHistoryAdjustment,
     getStressAdjustment,
-    generateNarrativeSummary
+    generateNarrativeSummary,
+    calculateWhatIf,
+    whatIfOptimals
   };
 
 })();

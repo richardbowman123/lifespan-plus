@@ -812,6 +812,28 @@
           </div>
         </div>
 
+        <!-- What If Scenario Panel -->
+        <div id="whatif-panel" class="card result-card whatif-card hidden">
+          <h3>What if you made some changes?</h3>
+          <p class="card-note">Toggle any factor below to see what your estimate could look like if you moved it to the optimal level. This isn't a promise, it's what the research suggests is possible.</p>
+
+          <div class="whatif-summary">
+            <div class="whatif-le-display">
+              <span class="whatif-le-label">Your estimate with changes</span>
+              <span class="whatif-le-number" id="whatif-le-age">--</span>
+            </div>
+            <div class="whatif-gain-display hidden" id="whatif-gain">
+              <span class="whatif-gain-text" id="whatif-gain-text"></span>
+            </div>
+          </div>
+
+          <div id="whatif-toggles" class="whatif-toggles">
+            <!-- Populated by JS -->
+          </div>
+
+          <p class="whatif-footer hidden" id="whatif-footer">Small, sustainable changes add up. You don't have to do everything at once.</p>
+        </div>
+
         <!-- Narrative Summary -->
         <div id="s2-narrative-summary" class="narrative-summary hidden"></div>
 
